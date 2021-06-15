@@ -1,1 +1,8 @@
 <h1>Add Contact</h1>
+
+<h2>{{ note }}</h2>
+
+<form action="{% url 'addContact' %}" method="post">
+  {% csrf_token %} {{ addContactForm }}
+  <input type="submit" value="Add Contact" />
+</form>
