@@ -1,3 +1,7 @@
 from django.db import models
 
-# Create your models here.
+class Contact(models.Model):
+    contactFirstName = models.CharField(max_length=30)
+    contactLastName = models.CharField(max_length=30)
+    contactEmail = models.EmailField(max_length=254)
+    contactPhoneNumber = models.CharField(max_length=12)

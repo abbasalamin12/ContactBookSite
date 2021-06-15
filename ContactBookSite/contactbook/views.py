@@ -3,4 +3,7 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the index page.")
+    return render(request, 'contactbook/index.html')
+
+def addContact(request):
+    return render(request, 'contactbook/addContact.html')
