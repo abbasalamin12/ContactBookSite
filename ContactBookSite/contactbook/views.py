@@ -11,6 +11,7 @@ def addContact(request):
     if request.method == 'POST': # if the user submitted the form
         filledForm = AddContactForm(request.POST)
         if filledForm.is_valid():
+            filledForm.save()
             note = '{} {} has been added to the contact book.'.format(filledForm.cleaned_data['contactFirstName'], filledForm.cleaned_data['contactLastName'])
             newForm = AddContactForm()
             return render(request, 'contactbook/addContact.html', {'addContactForm':newForm, 'note':note})
