@@ -1,8 +1,18 @@
-<h1>Add Contact</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+  </head>
 
-<h2>{{ note }}</h2>
+  <h1>Add Contact</h1>
 
-<form action="{% url 'addContact' %}" method="post">
-  {% csrf_token %} {{ addContactForm }}
-  <input type="submit" value="Add Contact" />
-</form>
+  <h2>{{ note }}</h2>
+
+  <body>
+    <form action="{% url 'addContact' %}" method="post">
+      {% csrf_token %} {{ addContactForm }}
+      <input type="submit" value="Add Contact" />
+    </form>
+  </body>
+</html>
