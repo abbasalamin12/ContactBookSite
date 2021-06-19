@@ -4,6 +4,31 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}" />
   </head>
+  <body>
+    <ul id="navbar">
+      <li><a href="/">Home</a></li>
+      <li><a href="addContact">Add Contact</a></li>
+    </ul>
+    <hr />
+
     <h1>Contact Book</h1>
+
+    <table style="width: 70%">
+      <tr style="text-align: left">
+        <th>First Name:</th>
+        <th>Last Name:</th>
+        <th>Email:</th>
+        <th>Phone Number:</th>
+      </tr>
+
+      {% for contact in contacts %}
+      <tr>
+        <td>{{ contact.contactFirstName }}</td>
+        <td>{{ contact.contactLastName }}</td>
+        <td>{{ contact.contactEmail}}</td>
+        <td>{{ contact.contactPhoneNumber}}</td>
+      </tr>
+      {% endfor %}
+    </table>
   </body>
 </html>

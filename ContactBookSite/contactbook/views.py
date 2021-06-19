@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from .serializers import ContactSerializer
 
 import requests
+import json
 
 from .models import Contact
 from .forms import AddContactForm
@@ -63,14 +64,20 @@ def contactDelete(request, pk):
     return Response('Contact successfully deleted!')
 
 def index(request):
-    return render(request, 'contactbook/index.html')
+    # this page will list all of the contacts
+
+    # api call to GET the data
+    url = 'http://127.0.0.1:8000/api/contact-list/'
+    contactList = requests.get(url).json()
+    
+    return render(request, 'contactbook/index.html', {'contacts': contactList})
  
 def addContact(request):
     if request.method == 'POST': # if the user submitted the form
         filledForm = AddContactForm(request.POST)
         if filledForm.is_valid(): # validate data before saving
             
-            # making the api call to post the data
+            # making the api call to POST the data
             url = 'http://127.0.0.1:8000/api/contact-create/'
             contactData = request.POST
             requests.post(url, contactData)

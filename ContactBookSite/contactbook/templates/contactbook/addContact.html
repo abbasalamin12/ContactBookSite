@@ -4,12 +4,17 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}" />
   </head>
-
-  <h1>Add Contact</h1>
-
-  <h2>{{ note }}</h2>
-
   <body>
+    <ul id="navbar">
+      <li><a href="/">Home</a></li>
+      <li><a href="addContact">Add Contact</a></li>
+    </ul>
+    <hr />
+
+    <h1>Add Contact</h1>
+
+    <h2>{{ note }}</h2>
+
     <form action="{% url 'addContact' %}" method="post">
       {% csrf_token %} {{ addContactForm }}
       <input type="submit" value="Add Contact" />
