@@ -63,13 +63,15 @@ def contactDelete(request, pk):
 
     return Response('Contact successfully deleted!')
 
+# views past this point are actual webpages
+
 def index(request):
     # this page will list all of the contacts
 
     # api call to GET the data
     url = 'http://127.0.0.1:8000/api/contact-list/'
     contactList = requests.get(url).json()
-    
+
     return render(request, 'contactbook/index.html', {'contacts': contactList})
  
 def addContact(request):
@@ -84,7 +86,28 @@ def addContact(request):
 
             note = '{} {} has been added to the contact book.'.format(filledForm.cleaned_data['contactFirstName'], filledForm.cleaned_data['contactLastName'])
             newForm = AddContactForm()
-            return render(request, 'contactbook/addContact.html', {'addContactForm':newForm, 'note':note})
+            return render(request, 'contactbook/add-contact.html', {'addContactForm':newForm, 'note':note})
     else:
         form = AddContactForm()
-        return render(request, 'contactbook/addContact.html', {'addContactForm':form})
+        return render(request, 'contactbook/add-contact.html', {'addContactForm':form})
+
+def editContact(request, pk):
+    if request.method == 'POST': # if the user submitted the form
+        print(pk)
+        filledForm = AddContactForm(request.POST)
+        if filledForm.is_valid(): # validate data before saving
+            # making the api call to POST the data
+            url = 'http://127.0.0.1:8000/api/contact-update/' + pk
+            contactData = request.POST
+            requests.post(url, contactData)
+
+            note = '{} {} has been updated.'.format(filledForm.cleaned_data['contactFirstName'], filledForm.cleaned_data['contactLastName'])
+            
+            return render(request, 'contactbook/edit-contact.html', {'editContactForm':filledForm, 'note':note})
+    else:
+        # make an api call to get the current data of the specific contact
+        url = 'http://127.0.0.1:8000/api/contact-detail/' + pk
+        contactData = requests.get(url).json()
+
+        form = AddContactForm(initial=contactData) # create the form object with prefilled data
+        return render(request, 'contactbook/edit-contact.html', {'editContactForm':form, 'contact':contactData})

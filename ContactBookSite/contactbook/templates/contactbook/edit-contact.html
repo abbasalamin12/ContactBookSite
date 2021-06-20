@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+  </head>
+  <body>
+    <ul id="navbar">
+      <li><a href="/">Home</a></li>
+      <li><a href="add-contact">Add Contact</a></li>
+    </ul>
+    <hr />
+
+    <h1>
+      Editing Contact: {{contact.contactFirstName}} {{contact.contactLastName}}
+    </h1>
+
+    <h2></h2>
+
+    <h2>{{ note }}</h2>
+
+    <!-- had to add the 'as url' part, otherwise I got an error-->
+    <form action="{% url 'editContact' contact.id as url %}" method="post">
+      {% csrf_token %} {{ editContactForm }}
+      <input type="submit" value="Update Contact" />
+    </form>
+  </body>
+</html>

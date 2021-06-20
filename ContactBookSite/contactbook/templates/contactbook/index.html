@@ -7,7 +7,7 @@
   <body>
     <ul id="navbar">
       <li><a href="/">Home</a></li>
-      <li><a href="addContact">Add Contact</a></li>
+      <li><a href="add-contact">Add Contact</a></li>
     </ul>
     <hr />
 
@@ -19,6 +19,7 @@
         <th>Last Name:</th>
         <th>Email:</th>
         <th>Phone Number:</th>
+        <th>Edit contact?</th>
       </tr>
 
       {% for contact in contacts %}
@@ -27,8 +28,21 @@
         <td>{{ contact.contactLastName }}</td>
         <td>{{ contact.contactEmail}}</td>
         <td>{{ contact.contactPhoneNumber}}</td>
+        <td>
+          <button
+            onclick="location.href='edit-contact/{{contact.id}}'"
+            type="button"
+          >
+            Edit
+          </button>
+        </td>
       </tr>
       {% endfor %}
     </table>
+
+    <br />
+    <button onclick="location.href='add-contact'" type="button">
+      Add new contact
+    </button>
   </body>
 </html>
