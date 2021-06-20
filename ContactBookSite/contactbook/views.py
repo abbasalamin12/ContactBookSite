@@ -1,13 +1,14 @@
 from django.conf.urls import url
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
+from django.urls import reverse
+from django.contrib.messages import error
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import ContactSerializer
 
 import requests
-import json
 
 from .models import Contact
 from .forms import AddContactForm
@@ -72,7 +73,12 @@ def index(request):
     url = 'http://127.0.0.1:8000/api/contact-list/'
     contactList = requests.get(url).json()
 
-    return render(request, 'contactbook/index.html', {'contacts': contactList})
+    if(len(contactList)<=0):
+        hasZeroContacts = True
+    else:
+        hasZeroContacts = False
+
+    return render(request, 'contactbook/index.html', {'contacts': contactList, 'hasZeroContacts':hasZeroContacts})
  
 def addContact(request):
     if request.method == 'POST': # if the user submitted the form
@@ -85,8 +91,9 @@ def addContact(request):
             requests.post(url, contactData)
 
             note = '{} {} has been added to the contact book.'.format(filledForm.cleaned_data['contactFirstName'], filledForm.cleaned_data['contactLastName'])
-            newForm = AddContactForm()
-            return render(request, 'contactbook/add-contact.html', {'addContactForm':newForm, 'note':note})
+            error(request, note)
+
+            return redirect(index)
     else:
         form = AddContactForm()
         return render(request, 'contactbook/add-contact.html', {'addContactForm':form})
@@ -102,8 +109,9 @@ def editContact(request, pk):
             requests.post(url, contactData)
 
             note = '{} {} has been updated.'.format(filledForm.cleaned_data['contactFirstName'], filledForm.cleaned_data['contactLastName'])
-            
-            return render(request, 'contactbook/edit-contact.html', {'editContactForm':filledForm, 'note':note})
+            error(request, note)
+
+            return redirect(index)
     else:
         # make an api call to get the current data of the specific contact
         url = 'http://127.0.0.1:8000/api/contact-detail/' + pk
@@ -111,3 +119,25 @@ def editContact(request, pk):
 
         form = AddContactForm(initial=contactData) # create the form object with prefilled data
         return render(request, 'contactbook/edit-contact.html', {'editContactForm':form, 'contact':contactData})
+
+def deleteContact(request, pk):
+    if request.method == 'POST': # if the user submitted the form
+        
+        # make an api call to get the current data of the specific contact
+        url = 'http://127.0.0.1:8000/api/contact-detail/' + pk
+        contactData = requests.get(url).json()
+
+        # making the api call to POST the data
+        url = 'http://127.0.0.1:8000/api/contact-delete/' + pk
+        requests.delete(url)
+
+        note = '{} {} has been successfully deleted.'.format(contactData['contactFirstName'], contactData['contactLastName'])
+        error(request, note)
+
+        return redirect(index)
+    else:
+        # make an api call to get the current data of the specific contact
+        url = 'http://127.0.0.1:8000/api/contact-detail/' + pk
+        contactData = requests.get(url).json()
+
+        return render(request, 'contactbook/delete-contact.html', {'contact':contactData})

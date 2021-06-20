@@ -15,10 +15,6 @@
       Editing Contact: {{contact.contactFirstName}} {{contact.contactLastName}}
     </h1>
 
-    <h2></h2>
-
-    <h2>{{ note }}</h2>
-
     <!-- had to add the 'as url' part, otherwise I got an error-->
     <form action="{% url 'editContact' contact.id as url %}" method="post">
       {% csrf_token %} {{ editContactForm }}

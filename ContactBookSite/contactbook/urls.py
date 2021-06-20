@@ -12,4 +12,5 @@ urlpatterns = [
     path('api/contact-delete/<str:pk>', views.contactDelete, name='contact-delete'),
     path('add-contact', views.addContact, name='addContact'),
     path('edit-contact/<str:pk>', views.editContact, name='editContact'),
+    path('delete-contact/<str:pk>', views.deleteContact, name='deleteContact'),
 ]

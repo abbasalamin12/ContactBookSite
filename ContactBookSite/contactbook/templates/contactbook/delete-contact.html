@@ -11,11 +11,14 @@
     </ul>
     <hr />
 
-    <h1>Add Contact</h1>
+    <h1>
+      Are you sure you want to delete: {{contact.contactFirstName}}
+      {{contact.contactLastName}}
+    </h1>
 
-    <form action="{% url 'addContact' %}" method="post">
-      {% csrf_token %} {{ addContactForm }}
-      <input type="submit" value="Add Contact" />
+    <form action="{% url 'deleteContact' contact.id as url %}" method="post">
+      {% csrf_token %} {{ editContactForm }}
+      <input type="submit" value="Delete Contact" />
     </form>
   </body>
 </html>
