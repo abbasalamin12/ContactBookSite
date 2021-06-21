@@ -8,6 +8,11 @@
   padding-top: 0px;
   padding-bottom: 0px;
 }
+.search {
+  display: inline;
+  float: right;
+  position: relative;
+}
 body {
   font-family: Arial, Helvetica, sans-serif;
 }

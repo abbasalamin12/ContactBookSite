@@ -1,11 +1,11 @@
 from django.conf.urls import url
 from django.shortcuts import redirect, render
-from django.http import HttpResponse
-from django.urls import reverse
 from django.contrib.messages import error
+from django.db.models import Q
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import filters
 from .serializers import ContactSerializer
 
 import requests
@@ -27,7 +27,12 @@ def apiOverview(request):
 
 @api_view(['GET']) 
 def contactList(request):
-    contacts = Contact.objects.all()
+    contacts = Contact.objects.all() 
+    searchQuery = request.GET.get('search')
+
+    if(searchQuery):
+        contacts = contacts.filter(Q(contactFirstName__icontains=searchQuery) | Q(contactLastName__icontains=searchQuery) | Q(contactEmail__icontains=searchQuery))
+    
     serializer = ContactSerializer(contacts, many=True) # make the data python friendly
     return Response(serializer.data)
 
@@ -39,7 +44,6 @@ def contactDetail(request, pk):
 
 @api_view(['POST']) 
 def contactCreate(request):
-    print('test')
     serializer = ContactSerializer(data=request.data)
     
     if serializer.is_valid():
@@ -69,8 +73,15 @@ def contactDelete(request, pk):
 def index(request):
     # this page will list all of the contacts
 
+    searchQuery = request.GET.get('search')
+    if(searchQuery==None):
+        searchQuery = ''
+    else:
+        note = 'Search results for \'{}\''.format(searchQuery)
+        error(request, note)
+
     # api call to GET the data
-    url = 'http://127.0.0.1:8000/api/contact-list/'
+    url = 'http://127.0.0.1:8000/api/contact-list/?search=' + searchQuery
     contactList = requests.get(url).json()
 
     if(len(contactList)<=0):
@@ -78,7 +89,7 @@ def index(request):
     else:
         hasZeroContacts = False
 
-    return render(request, 'contactbook/index.html', {'contacts': contactList, 'hasZeroContacts':hasZeroContacts})
+    return render(request, 'contactbook/index.html', {'contacts': contactList, 'hasZeroContacts':hasZeroContacts, 'searchQuery':searchQuery})
  
 def addContact(request):
     if request.method == 'POST': # if the user submitted the form
@@ -100,7 +111,6 @@ def addContact(request):
 
 def editContact(request, pk):
     if request.method == 'POST': # if the user submitted the form
-        print(pk)
         filledForm = AddContactForm(request.POST)
         if filledForm.is_valid(): # validate data before saving
             # making the api call to POST the data

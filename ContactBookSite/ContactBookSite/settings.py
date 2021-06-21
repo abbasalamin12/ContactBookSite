@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'contactbook',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
